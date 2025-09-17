@@ -67,10 +67,17 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
-    // Carrito
-    Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
-    Route::get('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-    Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::get('/tienda', [CarritoController::class, 'tienda'])->name('clientes.tienda');
+Route::post('/add-cart', [CarritoController::class, 'addCart'])->name('cliente.addCart');
+Route::post('/update-cart', [CarritoController::class, 'updateCart'])->name('cliente.updateCart');
+Route::post('/remove-cart', [CarritoController::class, 'removeCart'])->name('cliente.removeCart');
+Route::post('/clear-cart', [CarritoController::class, 'clearCart'])->name('cliente.clearCart');
+Route::post('/pagar', [CarritoController::class, 'pagar'])->name('cliente.pagar');
+Route::post('/cliente/pagar', [PedidoController::class, 'store'])->name('cliente.pagar');
+
+
+
+
 
     // PUNTO DE VENTA
     Route::get('/pos', [PosController::class,'index'])->name('pos.index');
@@ -105,25 +112,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
     });
 
-
-
-
-    Route::middleware('auth')->prefix('cliente')->group(function () {
-        // Mostrar productos
-        Route::get('/tienda', [TiendaController::class, 'index'])->name('cliente.tienda');
-    
-        // Agregar o actualizar carrito
-        Route::post('/tienda/add-cart', [TiendaController::class, 'addCart'])->name('cliente.addCart');
-    
-        // Vaciar carrito
-        Route::post('/tienda/clear-cart', [TiendaController::class, 'clearCart'])->name('cliente.clearCart');
-    
-        // Pagar y generar pedido
-        Route::post('/tienda/pagar', [TiendaController::class, 'pagar'])->name('cliente.pagar');
-    
-        // Historial de compras
-        Route::get('/historial', [TiendaController::class, 'historial'])->name('cliente.historial');
-    });
+  
 });
 
 require __DIR__.'/auth.php';

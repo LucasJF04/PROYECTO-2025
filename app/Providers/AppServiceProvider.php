@@ -24,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
                     'perfil' => true,
                     'ventas' => $user->rol === 'administrador',
                     'pedidos' => $user->rol === 'administrador',
-                    'catalogo' => $user->rol === 'cliente',
                     'productos' => $user->rol === 'administrador',
                     'categorias' => $user->rol === 'administrador',
                     'empleados' => $user->rol === 'administrador',

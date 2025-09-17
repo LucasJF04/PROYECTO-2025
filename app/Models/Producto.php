@@ -11,7 +11,7 @@ class Producto extends Model
     use HasFactory, Sortable;
 
     // Nombre de la tabla
-    protected $table = 'producto';
+    protected $table = 'productos';
     protected $primaryKey = 'id_producto'; // <--- clave primaria real
 
     // Campos que se pueden llenar

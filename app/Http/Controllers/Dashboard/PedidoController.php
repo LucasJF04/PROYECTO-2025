@@ -22,7 +22,6 @@ class PedidoController extends Controller
     public function pendientes()
     {
         $row = (int) request('row', 10);
-
         if ($row < 1 || $row > 100) {
             abort(400, 'El parámetro debe ser un número entre 1 y 100.');
         }
@@ -31,9 +30,7 @@ class PedidoController extends Controller
             ->sortable()
             ->paginate($row);
 
-        return view('pedidos.pendientes', [
-            'pedidos' => $pedidos
-        ]);
+        return view('pedidos.pendientes', compact('pedidos'));
     }
 
     /**
@@ -42,7 +39,6 @@ class PedidoController extends Controller
     public function completados()
     {
         $row = (int) request('row', 10);
-
         if ($row < 1 || $row > 100) {
             abort(400, 'El parámetro debe ser un número entre 1 y 100.');
         }
@@ -51,9 +47,7 @@ class PedidoController extends Controller
             ->sortable()
             ->paginate($row);
 
-        return view('pedidos.completados', [
-            'pedidos' => $pedidos
-        ]);
+        return view('pedidos.completados', compact('pedidos'));
     }
 
     /**
@@ -62,18 +56,17 @@ class PedidoController extends Controller
     public function stock()
     {
         $row = (int) request('row', 10);
-
         if ($row < 1 || $row > 100) {
             abort(400, 'El parámetro debe ser un número entre 1 y 100.');
         }
 
-        return view('stock.index', [
-            'productos' => Producto::with(['categoria', 'proveedor'])
-                ->filter(request(['search']))
-                ->sortable()
-                ->paginate($row)
-                ->appends(request()->query()),
-        ]);
+        $productos = Producto::with(['categoria', 'proveedor'])
+            ->filter(request(['search']))
+            ->sortable()
+            ->paginate($row)
+            ->appends(request()->query());
+
+        return view('stock.index', compact('productos'));
     }
 
     /**
@@ -81,46 +74,42 @@ class PedidoController extends Controller
      */
     public function guardar(Request $request)
     {
-        $rules = [
-            'id_cliente' => 'required|numeric',
+        $validatedData = $request->validate([
+            'id_cliente'  => 'required|numeric',
             'estado_pago' => 'required|string',
-            'pago' => 'numeric|nullable',
-            'deuda' => 'numeric|nullable',
-        ];
+            'pago'        => 'numeric|nullable',
+            'deuda'       => 'numeric|nullable',
+        ]);
 
         $numero_factura = IdGenerator::generate([
-            'table' => 'pedidos',
-            'field' => 'numero_factura',
+            'table'  => 'pedidos',
+            'field'  => 'numero_factura',
             'length' => 10,
             'prefix' => 'FAC-'
         ]);
 
-        $validatedData = $request->validate($rules);
-        $validatedData['fecha_pedido'] = Carbon::now()->format('Y-m-d');
-        $validatedData['estado_pedido'] = 'pendiente';
+        $validatedData['fecha_pedido']   = Carbon::now()->format('Y-m-d');
+        $validatedData['estado_pedido']  = 'pendiente';
         $validatedData['total_productos'] = Cart::count();
-        $validatedData['subtotal'] = Cart::subtotal();
-        $validatedData['iva'] = Cart::tax();
+        $validatedData['subtotal']       = (float) Cart::subtotal(0, '', '');
+        $validatedData['iva']            = (float) Cart::tax(0, '', '');
+        $validatedData['total']          = (float) Cart::total(0, '', '');
         $validatedData['numero_factura'] = $numero_factura;
-        $validatedData['total'] = Cart::total();
-        $validatedData['deuda'] = Cart::total() - $validatedData['pago'];
-        $validatedData['created_at'] = Carbon::now();
+        $validatedData['deuda']          = $validatedData['total'] - ($validatedData['pago'] ?? 0);
+        $validatedData['created_at']     = Carbon::now();
 
         $pedido_id = Pedido::insertGetId($validatedData);
 
         // Guardar detalles del pedido
-        $contenido = Cart::content();
-        $detalles = array();
-
-        foreach ($contenido as $item) {
-            $detalles['id_pedido'] = $pedido_id;
-            $detalles['id_producto'] = $item->id;
-            $detalles['cantidad'] = $item->qty;
-            $detalles['costo_unitario'] = $item->price;
-            $detalles['total'] = $item->total;
-            $detalles['created_at'] = Carbon::now();
-
-            DetallePedido::insert($detalles);
+        foreach (Cart::content() as $item) {
+            DetallePedido::insert([
+                'id_pedido'     => $pedido_id,
+                'id_producto'   => $item->id,
+                'cantidad'      => $item->qty,
+                'costo_unitario'=> $item->price,
+                'total'         => $item->price * $item->qty,
+                'created_at'    => Carbon::now(),
+            ]);
         }
 
         // Vaciar carrito
@@ -134,16 +123,13 @@ class PedidoController extends Controller
      */
     public function detalles(Int $id_pedido)
     {
-        $pedido = Pedido::where('id_pedido', $id_pedido)->first();
+        $pedido = Pedido::where('id_pedido', $id_pedido)->firstOrFail();
         $detallesPedido = DetallePedido::with('producto')
             ->where('id_pedido', $id_pedido)
             ->orderBy('id_detalle', 'DESC')
             ->get();
 
-        return view('pedidos.detalles', [
-            'pedido' => $pedido,
-            'detallesPedido' => $detallesPedido,
-        ]);
+        return view('pedidos.detalles', compact('pedido', 'detallesPedido'));
     }
 
     /**
@@ -155,10 +141,9 @@ class PedidoController extends Controller
 
         // Reducir stock
         $productos = DetallePedido::where('id_pedido', $pedido_id)->get();
-
         foreach ($productos as $producto) {
             Producto::where('id_producto', $producto->id_producto)
-                ->update(['stock' => DB::raw('stock-'.$producto->cantidad)]);
+                ->update(['stock' => DB::raw('stock - ' . $producto->cantidad)]);
         }
 
         Pedido::findOrFail($pedido_id)->update(['estado_pedido' => 'completado']);
@@ -171,29 +156,59 @@ class PedidoController extends Controller
      */
     public function descargarFactura(Int $id_pedido)
     {
-        $pedido = Pedido::where('id_pedido', $id_pedido)->first();
+        $pedido = Pedido::where('id_pedido', $id_pedido)->firstOrFail();
         $detallesPedido = DetallePedido::with('producto')
             ->where('id_pedido', $id_pedido)
             ->orderBy('id_detalle', 'DESC')
             ->get();
 
-        return view('pedidos.factura', [
-            'pedido' => $pedido,
-            'detallesPedido' => $detallesPedido,
-        ]);
+        return view('pedidos.factura', compact('pedido', 'detallesPedido'));
     }
 
     /**
      * Pedidos con deuda pendiente.
      */
-    public function pendientesPago() { $row = (int) request('row', 10); if ($row < 1 || $row > 100) abort(400, 'El parámetro por página debe ser entre 1 y 100.'); $pedidos = Pedido::where('pendiente', '>', 0)->sortable()->paginate($row); return view('pedidos.pendientesPago', compact('pedidos')); } /** * Ajax monto pendiente */ public function ajaxPendiente(int $id) { $pedido = Pedido::findOrFail($id); return response()->json($pedido); }
+    public function pendientesPago()
+    {
+        $row = (int) request('row', 10);
+        if ($row < 1 || $row > 100) {
+            abort(400, 'El parámetro por página debe ser entre 1 y 100.');
+        }
 
+        $pedidos = Pedido::where('deuda', '>', 0)
+            ->sortable()
+            ->paginate($row);
+
+        return view('pedidos.pendientesPago', compact('pedidos'));
+    }
+
+    /**
+     * Obtener pedido por AJAX.
+     */
     public function obtenerPedidoAjax(Int $id)
     {
         $pedido = Pedido::findOrFail($id);
-
         return response()->json($pedido);
     }
 
-    public function actualizarPendiente(Request $request) { $validated = $request->validate([ 'order_id' => 'required|numeric', 'due' => 'required|numeric', ]); $pedido = Pedido::findOrFail($validated['order_id']); $pedido->update([ 'pendiente' => $pedido->pendiente - $validated['due'], 'pago' => $pedido->pago + $validated['due'], ]); return Redirect::route('pedidos.pendientesPago')->with('success', '¡Monto pendiente actualizado correctamente!'); }
+    /**
+     * Actualizar monto pendiente.
+     */
+    public function actualizarPendiente(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|numeric',
+            'due'      => 'required|numeric',
+        ]);
+
+        $pedido = Pedido::findOrFail($validated['order_id']);
+
+        $pedido->update([
+            'deuda' => $pedido->deuda - $validated['due'],
+            'pago'  => $pedido->pago + $validated['due'],
+        ]);
+
+        return Redirect::route('pedidos.pendientesPago')
+            ->with('success', '¡Monto pendiente actualizado correctamente!');
+    }
 }

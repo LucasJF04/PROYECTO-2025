@@ -74,23 +74,19 @@
                     </li>
                 @endif
 
-                {{-- NUEVO: CATÁLOGO --}}
-                @if($permisos['catalogo'])
-                <li class="{{ Request::is('catalogo*') ? 'active' : '' }}">
-                    <a href="{{ route('catalogo.index') }}" class="d-flex align-items-center">
+                {{-- MIS COMPRAS --}}
+                @if($permisos['clientes'])
+                <li class="{{ Request::is('tienda*') ? 'active' : '' }}">
+                    <a href="{{ route('clientes.tienda') }}" class="d-flex align-items-center">
                         <i class="fa-solid fa-store"></i>
                         <span class="ml-3">Mis compras</span>
                     </a>
                 </li>
                 @endif
 
-                {{-- NUEVO: CARRITO --}}
-                <li class="{{ Request::is('carrito*') ? 'active' : '' }}">
-                    <a href="{{ route('carrito.index') }}" class="d-flex align-items-center">
-                        <i class="fa-solid fa-basket-shopping"></i>
-                        <span class="ml-3">Mis pedidos</span>
-                    </a>
-                </li>
+
+                
+      
 
                 {{-- EMPLEADOS --}}
                 @if($permisos['empleados'])

@@ -8,45 +8,86 @@ use App\Models\Producto;
 
 class CarritoController extends Controller
 {
-    // Mostrar carrito
-    public function index()
+    // Mostrar tienda con productos y carrito
+    public function tienda(Request $request)
     {
-        $carrito = session()->get('carrito', []); // recupera el carrito de sesión
-        return view('carrito.index', compact('carrito'));
+        $search = $request->input('search');
+        $productos = Producto::when($search, function($query, $search){
+            return $query->where('nombre_producto', 'like', "%$search%");
+        })->paginate(12);
+
+        $carrito = $request->session()->get('carrito', []);
+
+        return view('clientes.tienda', compact('productos', 'carrito'));
     }
 
-    // Añadir producto al carrito
-    public function agregar($id)
-    {
-        $producto = Producto::findOrFail($id);
+    // Agregar producto al carrito
+    public function addCart(Request $request)
+{
+    $carrito = $request->session()->get('carrito', []);
 
-        $carrito = session()->get('carrito', []);
+    $productoId = $request->id;
 
-        if (isset($carrito[$id])) {
-            $carrito[$id]['cantidad']++;
-        } else {
-            $carrito[$id] = [
-                "nombre" => $producto->nombre,
-                "precio" => $producto->precio,
-                "cantidad" => 1
-            ];
-        }
+    // Crear un índice único para que cada agregado sea independiente
+    $key = uniqid();
 
-        session()->put('carrito', $carrito);
+    $carrito[$key] = [
+        'id' => $productoId,
+        'name' => $request->name,
+        'price' => $request->price,
+        'qty' => 1, // siempre 1 al agregar
+    ];
 
-        return redirect()->back()->with('success', 'Producto añadido al carrito!');
+    $request->session()->put('carrito', $carrito);
+
+    return redirect()->back()->with('success', 'Producto agregado al carrito');
+}
+
+public function updateCart(Request $request)
+{
+    $carrito = $request->session()->get('carrito', []);
+    $key = $request->key;
+    $cantidad = max(1, $request->qty);
+
+    if(isset($carrito[$key])){
+        $carrito[$key]['qty'] = $cantidad;
+        $request->session()->put('carrito', $carrito);
     }
 
-    // Eliminar producto del carrito
-    public function eliminar($id)
-    {
-        $carrito = session()->get('carrito', []);
+    return redirect()->back()->with('success', 'Cantidad actualizada');
+}
 
-        if (isset($carrito[$id])) {
-            unset($carrito[$id]);
-            session()->put('carrito', $carrito);
+public function removeCart(Request $request)
+{
+    $carrito = $request->session()->get('carrito', []);
+    $key = $request->key;
+
+    if(isset($carrito[$key])){
+        unset($carrito[$key]);
+        $request->session()->put('carrito', $carrito);
+    }
+
+    return redirect()->back()->with('success', 'Producto eliminado');
+}
+
+
+    // Vaciar carrito
+    public function clearCart(Request $request)
+    {
+        $request->session()->forget('carrito');
+        return redirect()->back()->with('success', 'Carrito vaciado');
+    }
+
+    // Simular pago
+    public function pagar(Request $request)
+    {
+        $carrito = $request->session()->get('carrito', []);
+
+        if(empty($carrito)){
+            return redirect()->back()->with('error', 'Carrito vacío');
         }
 
-        return redirect()->back()->with('success', 'Producto eliminado del carrito!');
+        $request->session()->forget('carrito');
+        return redirect()->back()->with('success', 'Pago realizado correctamente');
     }
 }

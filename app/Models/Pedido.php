@@ -24,13 +24,11 @@ class Pedido extends Model
         'total_productos',
         'subtotal',
         'iva',
-        'nro_factura',
+        'numero_factura',
         'total',
         'estado_pago',
         'pago',
-        'pendiente',
-        'created_at',
-        'updated_at'
+        'deuda',
     ];
 
     // Columnas que se pueden ordenar
@@ -39,7 +37,7 @@ class Pedido extends Model
         'id_cliente',
         'fecha_pedido',
         'pago',
-        'pendiente',
+        'deuda',
         'total',
     ];
 
@@ -61,8 +59,8 @@ class Pedido extends Model
         return $value ?? 0;
     }
 
-    // Accesor para calcular pendiente automáticamente si no existe
-    public function getPendienteAttribute($value)
+    // Accesor para calcular deuda automáticamente si no existe
+    public function getDeudaAttribute($value)
     {
         return $value ?? $this->total;
     }
