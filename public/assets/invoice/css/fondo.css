@@ -1,0 +1,23 @@
+/* public/assets/invoice/fondo.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url('/assets/invoice/fondo-login.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+
+.login-wrapper {
+    height: 100vh; /* ocupa toda la pantalla */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.9); /* blanco semi-transparente */
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
+}

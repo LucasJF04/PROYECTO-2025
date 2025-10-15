@@ -22,11 +22,21 @@
                         </a>
                     </li>
                 @endif
+                {{-- PANEL SOCIO --}}
+                @if($permisos['dashboard2'])
+                    <li class="{{ Request::is('dashboard-socio') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
+                            <i class="fa-solid fa-gauge"></i>
+                            <span class="ml-3">Panel</span>
+                        </a>
+                    </li>
+                @endif
+                
 
                 {{-- VENTAS --}}
                 @if($permisos['ventas'])
-                    <li class="{{ Request::is('pos*') ? 'active' : '' }}">
-                        <a href="{{ route('pos.index') }}" class="d-flex align-items-center">
+                    <li class="{{ Route::currentRouteNamed('pos.local') ? 'active' : '' }}">
+                        <a href="{{ route('pos.local') }}" class="d-flex align-items-center">
                             <i class="fa-solid fa-cart-shopping"></i>
                             <span class="ml-3">Vender</span>
                         </a>
@@ -35,24 +45,26 @@
 
                 {{-- PEDIDOS --}}
                 @if($permisos['pedidos'])
+                    @php
+                        $activeOrderMenu = Request::is('pedidos*') || Request::is('stock*');
+                    @endphp
                     <li>
-                        <a href="#orders" class="collapsed d-flex align-items-center" data-toggle="collapse" aria-expanded="false">
+                        <a href="#orders" class="d-flex align-items-center {{ $activeOrderMenu ? '' : 'collapsed' }}"
+                           data-toggle="collapse"
+                           aria-expanded="{{ $activeOrderMenu ? 'true' : 'false' }}">
                             <i class="fa-solid fa-box"></i>
                             <span class="ml-3">Pedidos</span>
                             <i class="fa-solid fa-chevron-down ml-auto"></i>
                         </a>
-                        <ul id="orders" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <ul id="orders" class="iq-submenu collapse {{ $activeOrderMenu ? 'show' : '' }}" data-parent="#iq-sidebar-toggle">
                             <li class="{{ Request::is('pedidos/pendientes*') ? 'active' : '' }}">
-                                <a href="{{ route('pedidos.pendientes') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Pedidos pendientes</span></a>
+                                <a href="{{ route('pedidos.pendientes') }}"><span>Pedidos pendientes</span></a>
                             </li>
                             <li class="{{ Request::is('pedidos/completados*') ? 'active' : '' }}">
-                                <a href="{{ route('pedidos.completados') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Pedidos completos</span></a>
+                                <a href="{{ route('pedidos.completados') }}"><span>Pedidos verificados</span></a>
                             </li>
-                            <li class="{{ Request::is('pedidos/pendientes-pago*') ? 'active' : '' }}">
-                                <a href="{{ route('pedidos.pendientesPago') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Pendiente a vencer</span></a>
-                            </li>
-                            <li class="{{ Request::is('stock*') ? 'active' : '' }}">
-                                <a href="{{ route('pedidos.stock') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Gestión de inventarios</span></a>
+                            <li class="{{ Request::is('pedidos/datos-pago*') ? 'active' : '' }}">
+                                <a href="{{ route('pedidos.datos-pago') }}"><span>Datos de pago</span></a>
                             </li>
                         </ul>
                     </li>
@@ -60,57 +72,66 @@
 
                 {{-- PRODUCTOS --}}
                 @if($permisos['productos'])
+                    @php
+                        $activeProductMenu = Request::is('productos*') || Request::is('categorias*');
+                    @endphp
                     <li>
-                        <a href="#products" class="collapsed d-flex align-items-center" data-toggle="collapse" aria-expanded="false">
+                        <a href="#products" class="d-flex align-items-center {{ $activeProductMenu ? '' : 'collapsed' }}"
+                           data-toggle="collapse"
+                           aria-expanded="{{ $activeProductMenu ? 'true' : 'false' }}">
                             <i class="fa-solid fa-boxes-stacked"></i>
                             <span class="ml-3">Productos</span>
                             <i class="fa-solid fa-chevron-down ml-auto"></i>
                         </a>
-                        <ul id="products" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                            <li><a href="{{ route('productos.index') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Productos</span></a></li>
-                            <li><a href="{{ route('productos.create') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Añadir producto</span></a></li>
-                            <li><a href="{{ route('categorias.index') }}"><i class="fa-solid fa-circle-arrow-right"></i><span>Categorías</span></a></li>
+                        <ul id="products" class="iq-submenu collapse {{ $activeProductMenu ? 'show' : '' }}" data-parent="#iq-sidebar-toggle">
+                            <li class="{{ Request::is('productos') ? 'active' : '' }}">
+                                <a href="{{ route('productos.index') }}"><span>Productos</span></a>
+                            </li>
+                            <li class="{{ Request::is('productos/create') ? 'active' : '' }}">
+                                <a href="{{ route('productos.create') }}"><span>Añadir producto</span></a>
+                            </li>
+                            <li class="{{ Request::is('categorias*') ? 'active' : '' }}">
+                                <a href="{{ route('categorias.index') }}"><span>Categorías</span></a>
+                            </li>
                         </ul>
                     </li>
                 @endif
 
                 {{-- MIS COMPRAS --}}
-                @if($permisos['clientes'])
-                <li class="{{ Request::is('tienda*') ? 'active' : '' }}">
-                    <a href="{{ route('clientes.tienda') }}" class="d-flex align-items-center">
-                        <i class="fa-solid fa-store"></i>
-                        <span class="ml-3">Mis compras</span>
-                    </a>
-                </li>
-                @endif
-
-
-                
-      
-
-                {{-- EMPLEADOS --}}
-                @if($permisos['empleados'])
-                    <li>
-                        <a href="{{ route('empleados.index') }}" class="d-flex align-items-center">
-                            <i class="fa-solid fa-user-tie"></i>
-                            <span class="ml-3">Empleados</span>
+                @if($permisos['mis_compras'])
+                    <li class="{{ Route::currentRouteNamed('pos.online') ? 'active' : '' }}">
+                        <a href="{{ route('pos.online') }}" class="d-flex align-items-center">
+                            <i class="fa-solid fa-store"></i>
+                            <span class="ml-3">Comprar</span>
                         </a>
                     </li>
                 @endif
 
-                {{-- CLIENTES --}}
-                @if($permisos['clientes'])
+
+                {{-- USUARIOS --}}
+                @if($permisos['usuarios'])
                     <li>
-                        <a href="{{ route('clientes.index') }}" class="d-flex align-items-center">
-                            <i class="fa-solid fa-users"></i>
-                            <span class="ml-3">Clientes-Socios</span>
+                        <a href="#users" class="d-flex align-items-center {{ Request::is('usuarios*') ? '' : 'collapsed' }}"
+                        data-toggle="collapse" aria-expanded="{{ Request::is('usuarios*') ? 'true' : 'false' }}">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="ml-3">Usuarios</span>
+                            <i class="fa-solid fa-chevron-down ml-auto"></i>
                         </a>
+                        <ul id="users" class="iq-submenu collapse {{ Request::is('usuarios*') ? 'show' : '' }}" data-parent="#iq-sidebar-toggle">
+                            <li class="{{ Request::is('usuarios/administradores') ? 'active' : '' }}">
+                                <a href="{{ route('usuarios.administradores') }}"><span>Administradores</span></a>
+                            </li>
+                            <li class="{{ Request::is('usuarios/socios') ? 'active' : '' }}">
+                                <a href="{{ route('usuarios.socios') }}"><span>Socios</span></a>
+                            </li>
+                        </ul>
                     </li>
                 @endif
+
 
                 {{-- PROVEEDORES --}}
                 @if($permisos['proveedores'])
-                    <li>
+                    <li class="{{ Request::is('proveedores*') ? 'active' : '' }}">
                         <a href="{{ route('proveedores.index') }}" class="d-flex align-items-center">
                             <i class="fa-solid fa-truck"></i>
                             <span class="ml-3">Proveedores</span>
@@ -118,29 +139,18 @@
                     </li>
                 @endif
 
-                {{-- ROLES Y PERMISOS --}}
-                @if($permisos['rolesPermisos'])
-                    <li>
-                        <a href="{{ route('roles.index') }}" class="d-flex align-items-center">
-                            <i class="fa-solid fa-key"></i>
-                            <span class="ml-3">Roles - Permisos</span>
-                        </a>
-                    </li>
-                @endif
-
-                {{-- USUARIOS --}}
-                @if($permisos['usuarios'])
-                    <li>
-                        <a href="{{ route('usuarios.index') }}" class="d-flex align-items-center">
-                            <i class="fa-solid fa-user"></i>
-                            <span class="ml-3">Usuarios</span>
+                @if(Auth::user()->rol === 'socio')
+                    <li class="{{ Route::currentRouteNamed('pedidos.misCompras') ? 'active' : '' }}">
+                        <a href="{{ route('pedidos.misCompras') }}" class="d-flex align-items-center">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span class="ml-3">Mis compras</span>
                         </a>
                     </li>
                 @endif
 
                 {{-- PERFIL --}}
                 @if($permisos['perfil'])
-                    <li>
+                    <li class="{{ Request::is('perfil*') ? 'active' : '' }}">
                         <a href="{{ route('perfil.index') }}" class="d-flex align-items-center">
                             <i class="fa-solid fa-id-badge"></i>
                             <span class="ml-3">Perfil</span>
@@ -148,28 +158,19 @@
                     </li>
                 @endif
 
-                {{-- REPORTES --}}
-                @if($permisos['reportes'])
-                    <li class="{{ Request::is('reportes*') ? 'active' : '' }}">
-                        <a href="{{ route('reportes.index') }}" class="d-flex align-items-center">
-                            <i class="fa-solid fa-history"></i>
-                            <span class="ml-3">Historial</span>
-                        </a>
-                    </li>
-                @endif
+              
 
                 {{-- SALIR --}}
-                    <li>
-                        <a href="{{ route('logout') }}" class="d-flex align-items-center"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span class="ml-3">Salir</span>
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-
+                <li>
+                    <a href="{{ route('logout') }}" class="d-flex align-items-center"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="ml-3">Salir</span>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
 
             </ul>
         </nav>

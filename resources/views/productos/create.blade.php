@@ -34,14 +34,14 @@
                         <div class="row">
                             <div class="input-group mb-4 col-lg-6">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input @error('imagen_producto') is-invalid @enderror" id="image" name="imagen_producto" accept="image/*" onchange="previewImage();">
+                                    <input type="file" class="custom-file-input @error('imagen_producto') is-invalid @enderror" id="imagen_producto" name="imagen_producto" accept="image/*" onchange="previewImage();">
                                     <label class="custom-file-label" for="imagen_producto">Elegir archivo</label>
+                                    @error('imagen_producto')
+                                        <div class="invalid-feedback d-block">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
-                                @error('imagen_producto')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
                             </div>
                         </div>
                         <!-- end: Input Image -->
@@ -52,91 +52,73 @@
                                 <label for="nombre_producto">Nombre producto <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('nombre_producto') is-invalid @enderror" id="nombre_producto" name="nombre_producto" value="{{ old('nombre_producto') }}" required>
                                 @error('nombre_producto')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="categoria_id">Categoría <span class="text-danger">*</span></label>
-                                <select class="form-control" name="categoria_id" required>
+                                <select class="form-control @error('categoria_id') is-invalid @enderror" name="categoria_id" required>
                                     <option selected="" disabled>-- Seleccionar categoría --</option>
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
                                     @endforeach
                                 </select>
                                 @error('categoria_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="proveedor_id">Proveedor <span class="text-danger">*</span></label>
-                                <select class="form-control" name="proveedor_id" required>
+                                <select class="form-control @error('proveedor_id') is-invalid @enderror" name="proveedor_id" required>
                                     <option selected="" disabled>-- Seleccionar proveedor --</option>
                                     @foreach ($proveedores as $proveedor)
                                         <option value="{{ $proveedor->id }}" {{ old('proveedor_id') == $proveedor->id ? 'selected' : '' }}>{{ $proveedor->nombre }}</option>
                                     @endforeach
                                 </select>
                                 @error('proveedor_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="almacen_producto">Almacén del producto</label>
                                 <input type="text" class="form-control @error('almacen_producto') is-invalid @enderror" id="almacen_producto" name="almacen_producto" value="{{ old('almacen_producto') }}">
                                 @error('almacen_producto')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="tienda_producto">Tienda del producto</label>
-                                <input type="text" class="form-control @error('tienda_producto') is-invalid @enderror" id="tienda_producto" name="tienda_producto" value="{{ old('tienda_producto') }}">
-                                @error('tienda_producto')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="fecha_compra">Fecha de compra</label>
-                                <input id="fecha_compra" class="form-control @error('fecha_compra') is-invalid @enderror" name="fecha_compra" value="{{ old('fecha_compra') }}" />
-                                @error('fecha_compra')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="fecha_expiracion">Fecha de caducidad</label>
-                                <input id="fecha_expiracion" class="form-control @error('fecha_expiracion') is-invalid @enderror" name="fecha_expiracion" value="{{ old('fecha_expiracion') }}" />
-                                @error('fecha_expiracion')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="precio_compra">Precio de compra <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('precio_compra') is-invalid @enderror" id="precio_compra" name="precio_compra" value="{{ old('precio_compra') }}" required>
                                 @error('precio_compra')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="precio_venta">Precio de venta <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('precio_venta') is-invalid @enderror" id="precio_venta" name="precio_venta" value="{{ old('precio_venta') }}" required>
                                 @error('precio_venta')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="stock">Stock <span class="text-danger">*</span></label>
+                                <input type="number" min="0" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock') }}" required>
+                                @error('stock')
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
                         </div>
@@ -153,17 +135,6 @@
     </div>
     <!-- Page end  -->
 </div>
-
-<script>
-    $('#fecha_compra').datepicker({
-        uiLibrary: 'bootstrap4',
-        format: 'yyyy-mm-dd'
-    });
-    $('#fecha_expiracion').datepicker({
-        uiLibrary: 'bootstrap4',
-        format: 'yyyy-mm-dd'
-    });
-</script>
 
 @include('components.preview-img-form')
 @endsection

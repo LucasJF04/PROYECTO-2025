@@ -12,7 +12,7 @@ class Producto extends Model
 
     // Nombre de la tabla
     protected $table = 'productos';
-    protected $primaryKey = 'id_producto'; // <--- clave primaria real
+    protected $primaryKey = 'id'; // <--- clave primaria real
 
     // Campos que se pueden llenar
     protected $fillable = [
@@ -22,9 +22,6 @@ class Producto extends Model
         'codigo_producto',
         'almacen_producto',
         'imagen_producto',
-        'tienda_producto',
-        'fecha_compra',
-        'fecha_expiracion',
         'precio_compra',
         'precio_venta',
         'stock',
@@ -62,5 +59,12 @@ class Producto extends Model
         $query->when($filters['search'] ?? false, function ($query, $search) {
             return $query->where('nombre_producto', 'like', '%' . $search . '%');
         });
+    }
+
+
+    // Para Dashboard
+    public function detallesPedido()
+    {
+        return $this->hasMany(DetallePedido::class, 'id_producto');
     }
 }

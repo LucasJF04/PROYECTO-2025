@@ -17,19 +17,40 @@ class Pedido extends Model
     protected $primaryKey = 'id_pedido';
 
     // Campos que se pueden llenar masivamente
+    const STATUS_PENDING = 'pendiente';
+    const STATUS_VERIFIED = 'verificado';
+    const STATUS_EN_PROCESO = 'en_proceso';
+    const STATUS_LISTO = 'listo';
+    const STATUS_EN_DESPACHO = 'en_despacho';
+    const STATUS_ENTREGADO = 'entregado';
+
     protected $fillable = [
         'id_cliente',
         'fecha_pedido',
-        'estado_pedido',
         'total_productos',
         'subtotal',
-        'iva',
-        'numero_factura',
         'total',
-        'estado_pago',
+        'estado_pedido',
+        'metodo_pago',
         'pago',
-        'deuda',
+        'pendiente',
+        'comprobante_pago',
+        'created_at',
+        'updated_at',
+        'tipo_entrega',
+        'direccion_entrega',
     ];
+    public static function allowedStates()
+    {
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_VERIFIED,
+            self::STATUS_EN_PROCESO,
+            self::STATUS_LISTO,
+            self::STATUS_EN_DESPACHO,
+            self::STATUS_ENTREGADO
+        ];
+    }
 
     // Columnas que se pueden ordenar
     public $sortable = [
@@ -37,14 +58,14 @@ class Pedido extends Model
         'id_cliente',
         'fecha_pedido',
         'pago',
-        'deuda',
+        'pendiente',
         'total',
     ];
 
     // Relación con el cliente
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
+        return $this->belongsTo(Usuario::class, 'id_cliente', 'id');
     }
 
     // Relación con los detalles del pedido
@@ -59,9 +80,26 @@ class Pedido extends Model
         return $value ?? 0;
     }
 
-    // Accesor para calcular deuda automáticamente si no existe
-    public function getDeudaAttribute($value)
+    // Accesor para calcular pendiente automáticamente si no existe
+    public function getPendienteAttribute($value)
     {
         return $value ?? $this->total;
     }
+
+
+    // COLORES
+    public function colorEstado()
+    {
+        $colores = [
+            'pendiente'    => 'badge-warning',
+            'verificado'   => 'badge-info',
+            'en_proceso'   => 'badge-orange',
+            'listo'        => 'badge-primary',
+            'en_despacho'  => 'badge-purple',
+            'entregado'    => 'badge-success',
+        ];
+
+        return $colores[$this->estado_pedido] ?? 'badge-secondary';
+    }
+
 }

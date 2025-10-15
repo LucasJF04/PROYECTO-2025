@@ -83,19 +83,22 @@
                             <td>{{ $proveedor->nombre_tienda }}</td>
                             <td>{{ $proveedor->tipo }}</td>
                             <td>
-                                <div class="d-flex align-items-center list-action">
-                                    <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"
-                                        href="{{ route('proveedores.show', $proveedor->id) }}"><i class="ri-eye-line mr-0"></i>
-                                    </a>
-                                    <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                        href="{{ route('proveedores.edit', $proveedor->id) }}""><i class="ri-pencil-line mr-0"></i>
-                                    </a>
-                                    <form action="{{ route('proveedores.destroy', $proveedor->id) }}" method="POST" style="margin-bottom: 5px">
-                                        @method('delete')
-                                        @csrf
-                                        <button type="submit" class="badge bg-warning mr-2 border-none" onclick="return confirm('Are you sure you want to delete this record?')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="ri-delete-bin-line mr-0"></i></button>
-                                    </form>
-                                </div>
+                            <div class="d-flex align-items-center list-action">
+                                <!-- Botón Editar -->
+                                <a href="{{ route('proveedores.edit', $proveedor->id) }}" class="btn btn-success btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Editar">
+                                     Editar
+                                </a>
+
+                                <!-- Botón Eliminar -->
+                                <form action="{{ route('proveedores.destroy', $proveedor->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este proveedor?')" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                    <i class="ri-delete-bin-line mr-0"></i>
+                                    </button>
+                                </form>
+                            </div>
+
                             </td>
                         </tr>
                         @endforeach

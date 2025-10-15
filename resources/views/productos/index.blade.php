@@ -20,6 +20,7 @@
                     </button>
                 </div>
             @endif
+
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Lista de productos</h4>
@@ -27,8 +28,8 @@
                         para optimizar la experiencia del usuario y garantizar la retención del producto.</p>
                 </div>
                 <div>
-                    <a href="{{ route('productos.importView') }}" class="btn btn-success add-list">Importar</a>
-                    <a href="{{ route('productos.exportData') }}" class="btn btn-warning add-list">Exportar</a>
+                    
+                    <a href="{{ route('productos.exportData') }}" class="btn btn-success add-list">Excel</a>
                     <a href="{{ route('productos.create') }}" class="btn btn-primary add-list">Añadir producto</a>
                 </div>
             </div>
@@ -40,11 +41,11 @@
                     <div class="form-group row">
                         <label for="row" class="col-sm-3 align-self-center">Filas:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" name="row">
-                                <option value="10" @if(request('row') == '10')selected="selected"@endif>10</option>
-                                <option value="25" @if(request('row') == '25')selected="selected"@endif>25</option>
-                                <option value="50" @if(request('row') == '50')selected="selected"@endif>50</option>
-                                <option value="100" @if(request('row') == '100')selected="selected"@endif>100</option>
+                            <select class="form-control" name="row" onchange="this.form.submit()">
+                                <option value="10" @if(request('row') == '10') selected @endif>10</option>
+                                <option value="25" @if(request('row') == '25') selected @endif>25</option>
+                                <option value="50" @if(request('row') == '50') selected @endif>50</option>
+                                <option value="100" @if(request('row') == '100') selected @endif>100</option>
                             </select>
                         </div>
                     </div>
@@ -54,8 +55,12 @@
                         <div class="input-group col-sm-8">
                             <input type="text" id="search" class="form-control" name="search" placeholder="Buscar producto" value="{{ request('search') }}">
                             <div class="input-group-append">
-                                <button type="submit" class="input-group-text bg-primary"><i class="fa-solid fa-magnifying-glass font-size-20"></i></button>
-                                <a href="{{ route('productos.index') }}" class="input-group-text bg-danger"><i class="fa-solid fa-trash"></i></a>
+                                <button type="submit" class="input-group-text bg-primary text-white">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                                <a href="{{ route('productos.index') }}" class="input-group-text bg-danger text-white">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -74,56 +79,54 @@
                             <th>Categoría</th>
                             <th>Proveedor</th>
                             <th>Precio</th>
-                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="ligth-body">
                         @forelse ($productos as $producto)
                         <tr>
-                            <td>{{ (($productos->currentPage() * 10) - 10) + $loop->iteration }}</td>
+                            <td>{{ (($productos->currentPage() - 1) * $productos->perPage()) + $loop->iteration }}</td>
                             <td>
-                                <img class="avatar-60 rounded" src="{{ $producto->imagen_producto ? asset('storage/products/'.$producto->imagen_producto) : asset('assets/images/product/sinfoto.png') }}">
+                                <img class="avatar-60 rounded" src="{{ $producto->imagen_producto ? asset('storage/products/'.$producto->imagen_producto) : asset('assets/images/product/sinfoto.png') }}" alt="Imagen producto">
                             </td>
                             <td>{{ $producto->nombre_producto }}</td>
-                            <td>{{ $producto->categoria->nombre }}</td>
-                            <td>{{ $producto->proveedor->nombre }}</td>
-                            <td>{{ $producto->precio_venta }}</td>
-                            <td>
-                                @if ($producto->fecha_expiracion > Carbon\Carbon::now()->format('Y-m-d'))
-                                    <span class="badge rounded-pill bg-success">Válido</span>
-                                @else
-                                    <span class="badge rounded-pill bg-danger">Vencido</span>
-                                @endif
-                            </td>
+                            <td>{{ $producto->categoria->nombre ?? 'Sin categoría' }}</td>
+                            <td>{{ $producto->proveedor->nombre ?? 'Sin proveedor' }}</td>
+                            <td>{{ number_format($producto->precio_venta, 2) }}</td>
                             <td>
                                 <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" style="margin-bottom: 5px">
                                     @method('delete')
                                     @csrf
                                     <div class="d-flex align-items-center list-action">
-                                        <a class="btn btn-info mr-2" data-toggle="tooltip" data-placement="top" title="Ver"
-                                            href="{{ route('productos.show', $producto->id) }}"><i class="ri-eye-line mr-0"></i>
+                                        <a class="btn btn-success mr-2" data-toggle="tooltip" title="Editar"
+                                            href="{{ route('productos.edit', $producto->id) }}">
+                                            Editar
                                         </a>
-                                        <a class="btn btn-success mr-2" data-toggle="tooltip" data-placement="top" title="Editar"
-                                            href="{{ route('productos.edit', $producto->id) }}"><i class="ri-pencil-line mr-0"></i>
-                                        </a>
-                                        <button type="submit" class="btn btn-warning mr-2 border-none" onclick="return confirm('¿Está seguro de que desea eliminar este producto?')" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="ri-delete-bin-line mr-0"></i></button>
+                                        <button type="submit" class="btn btn-danger mr-2 border-none" onclick="return confirm('¿Está seguro de que desea eliminar este producto?')" data-toggle="tooltip" title="Eliminar">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
                                     </div>
                                 </form>
                             </td>
                         </tr>
                         @empty
-                        <div class="alert text-white bg-danger" role="alert">
-                            <div class="iq-alert-text">No se encontraron productos.</div>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <i class="ri-close-line"></i>
-                            </button>
-                        </div>
+                        <tr>
+                            <td colspan="7">
+                                <div class="alert text-white bg-danger" role="alert">
+                                    <div class="iq-alert-text">No se encontraron productos.</div>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                        <i class="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            {{ $productos->links() }}
+
+            {{-- Paginación con filtros --}}
+            {{ $productos->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

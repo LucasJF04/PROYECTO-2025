@@ -21,8 +21,10 @@ class AppServiceProvider extends ServiceProvider
             if ($user) {
                 $permisos = [
                     'dashboard' => $user->rol === 'administrador',
+                    'dashboard2' => $user->rol === 'socio',
                     'perfil' => true,
-                    'ventas' => $user->rol === 'administrador',
+                    'ventas' => $user->rol === 'administrador', // Solo admin puede "Vender Local"
+                    'mis_compras' => $user->rol === 'socio', 
                     'pedidos' => $user->rol === 'administrador',
                     'productos' => $user->rol === 'administrador',
                     'categorias' => $user->rol === 'administrador',

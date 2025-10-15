@@ -56,11 +56,9 @@ class ProductoController extends Controller
             'categoria_id' => 'required|integer',
             'proveedor_id' => 'required|integer',
             'almacen_producto' => 'string|nullable',
-            'tienda_producto' => 'string|nullable',
-            'fecha_compra' => 'date_format:Y-m-d|nullable',
-            'fecha_expiracion' => 'date_format:Y-m-d|nullable',
             'precio_compra' => 'required|numeric',
             'precio_venta' => 'required|numeric',
+            'stock' => 'required|integer|min:0',
         ]);
 
         $validatedData['codigo_producto'] = $codigo;
@@ -104,11 +102,9 @@ class ProductoController extends Controller
             'categoria_id' => 'required|integer',
             'proveedor_id' => 'required|integer',
             'almacen_producto' => 'string|nullable',
-            'tienda_producto' => 'string|nullable',
-            'fecha_compra' => 'date_format:Y-m-d|nullable',
-            'fecha_expiracion' => 'date_format:Y-m-d|nullable',
             'precio_compra' => 'required|numeric',
             'precio_venta' => 'required|numeric',
+            'stock' => 'required|integer|min:0',
         ]);
 
         if ($file = $request->file('imagen_producto')) {
@@ -130,7 +126,10 @@ class ProductoController extends Controller
         return Redirect::route('productos.index')->with('success','¡Producto eliminado!');
     }
 
-    public function importView() { return view('productos.import'); }
+    public function importView()
+    {
+        return view('productos.import');
+    }
 
     public function importStore(Request $request)
     {
@@ -151,11 +150,9 @@ class ProductoController extends Controller
                     'codigo_producto' => $sheet->getCell('D'.$row)->getValue(),
                     'almacen_producto' => $sheet->getCell('E'.$row)->getValue(),
                     'imagen_producto' => $sheet->getCell('F'.$row)->getValue(),
-                    'tienda_producto' => $sheet->getCell('G'.$row)->getValue(),
-                    'fecha_compra' => $sheet->getCell('H'.$row)->getValue(),
-                    'fecha_expiracion' => $sheet->getCell('I'.$row)->getValue(),
                     'precio_compra' => $sheet->getCell('J'.$row)->getValue(),
                     'precio_venta' => $sheet->getCell('K'.$row)->getValue(),
+                    'stock' => $sheet->getCell('L'.$row)->getValue(),
                 ];
             }
 
@@ -173,8 +170,8 @@ class ProductoController extends Controller
         $productos = Producto::all()->sortByDesc('id');
 
         $product_array[] = [
-            'Nombre producto','Categoría','Proveedor','Código','Almacén','Imagen','Tienda',
-            'Fecha compra','Fecha expiración','Precio compra','Precio venta'
+            'Nombre producto','Categoría','Proveedor','Código','Almacén','Imagen',
+            'Precio compra','Precio venta','Stock'
         ];
 
         foreach($productos as $producto){
@@ -185,11 +182,9 @@ class ProductoController extends Controller
                 $producto->codigo_producto,
                 $producto->almacen_producto,
                 $producto->imagen_producto,
-                $producto->tienda_producto,
-                $producto->fecha_compra,
-                $producto->fecha_expiracion,
                 $producto->precio_compra,
                 $producto->precio_venta,
+                $producto->stock,
             ];
         }
 
@@ -211,4 +206,6 @@ class ProductoController extends Controller
             exit();
         } catch (Exception $e) { return; }
     }
+
+
 }

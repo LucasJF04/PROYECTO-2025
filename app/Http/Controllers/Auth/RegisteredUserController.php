@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -30,20 +30,21 @@ class RegisteredUserController extends Controller
      */
     public function almacenar(Request $request): RedirectResponse
     {
-        // Validación de los datos usando los campos en español
-        $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'usuario' => ['required', 'string', 'max:255', 'unique:'.Usuario::class, 'alpha_dash'],
-            'correo' => ['required', 'string', 'email', 'max:255', 'unique:'.Usuario::class],
-            'contrasena' => ['required', 'confirmed', Rules\Password::defaults()],
+        // Validación de los datos usando reglas
+        $validated = $request->validate([
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[A-Za-zÀ-ÿ\s]+$/u'],
+            'usuario' => ['required', 'string', 'min:4', 'max:100', 'alpha_dash', 'unique:usuarios,usuario'],
+            'correo' => ['required', 'string', 'email', 'max:150', 'unique:usuarios,correo'],
+            'contrasena' => ['required', 'string', 'min:6', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
         ]);
 
-        // Crear el usuario en la base de datos
+        // Crear el usuario
         $usuario = Usuario::create([
-            'nombre' => $request->nombre,
-            'usuario' => $request->usuario,
-            'correo' => $request->correo,
-            'contrasena' => Hash::make($request->contrasena),
+            'nombre' => $validated['nombre'],
+            'usuario' => $validated['usuario'],
+            'correo' => $validated['correo'],
+            'contrasena' => Hash::make($validated['contrasena']),
+            'rol' => 'cliente',
         ]);
 
         // Disparar evento de registro
@@ -53,6 +54,6 @@ class RegisteredUserController extends Controller
         Auth::login($usuario);
 
         // Redirigir a la ruta principal
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::HOME)->with('success', 'Cuenta creada correctamente.');
     }
 }

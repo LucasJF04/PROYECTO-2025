@@ -1,3 +1,4 @@
+
 @extends('auth.body.main')
 
 @section('container')
@@ -25,7 +26,7 @@
                                                    autocomplete="off" 
                                                    required 
                                                    autofocus>
-                                            <label>Email o Nombre de usuario</label>
+                                            <label>Correo o nombre de usuario</label>
                                         </div>
                                         @error('usuario_o_correo')
                                         <div class="mb-4" style="margin-top: -20px">
@@ -44,8 +45,9 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <p>¿No eres miembro aún? <a href="{{ route('register') }}" class="text-primary">Registrarse</a></p>
+                                        <!-- <p>¿No eres miembro aún? <a href="{{ route('register') }}" class="text-primary">Registrarse</a></p> -->
                                     </div>
+                                    
                                     <div class="col-lg-6">
                                         <a href="#" class="text-primary float-right">¿Olvidó su contraseña?</a>
                                     </div>
@@ -63,4 +65,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection 

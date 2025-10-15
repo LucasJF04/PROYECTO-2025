@@ -13,18 +13,21 @@ class Proveedor extends Model
     // Campos que se pueden llenar en asignación masiva
     protected $fillable = [
         'nombre',
+        'nombre_tienda',
         'correo',
         'telefono',
-        'direccion',
-        'nombre_tienda',
         'foto',
         'tipo',
         'titular_cuenta',
         'numero_cuenta',
         'banco',
-        'sucursal_banco',
+        'sucursal',
         'ciudad',
+        'direccion',
     ];
+    
+    
+    
 
     // Campos ordenables (para el sortable)
     public $sortable = [

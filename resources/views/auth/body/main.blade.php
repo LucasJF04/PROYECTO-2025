@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/invoice/css/fondo.css') }}">
     </head>
 <body>
     <!-- loader Start -->
@@ -36,5 +37,8 @@
 
     <!-- App JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+
+
+        
 </body>
 </html>

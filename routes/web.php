@@ -26,22 +26,18 @@ Route::middleware('auth')->group(function () {
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // PERFIL (única ruta para todos los roles)
+    // PERFIL
     Route::get('/perfil', [PerfilController::class, 'show'])->name('perfil.index');
     Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
     Route::get('/perfil/cambiar-password', [PerfilController::class, 'changePassword'])->name('perfil.change-password');
 
-    // USUARIOS
+    // USUARIOS (excepto show)
     Route::resource('/usuarios', UsuarioController::class)->except(['show']);
 
-    // Rutas exclusivas para administradores
-    Route::middleware('rol:administrador')->group(function () {
-        Route::resource('/usuarios', UsuarioController::class);
-    });
-
-    // CLIENTES
-    Route::resource('/clientes', ClienteController::class);
+    // Listados independientes
+    Route::get('usuarios/administradores', [UsuarioController::class, 'administradores'])->name('usuarios.administradores');
+    Route::get('usuarios/socios', [UsuarioController::class, 'socios'])->name('usuarios.socios');
 
     // PROVEEDORES
     Route::resource('/proveedores', ProveedorController::class)->parameters([
@@ -56,48 +52,48 @@ Route::middleware('auth')->group(function () {
     Route::post('/productos/importar', [ProductoController::class, 'importStore'])->name('productos.importStore');
     Route::get('/productos/exportar', [ProductoController::class, 'exportData'])->name('productos.exportData');
     Route::resource('/productos', ProductoController::class);
-    //ROLES
-    Route::middleware('auth', 'rol:administrador')->group(function () {
+
+    // ROLES (solo admin)
+    Route::middleware(['rol:administrador'])->group(function () {
         Route::resource('/roles', RoleController::class);
     });
 
     // CATEGORÍAS
     Route::resource('/categorias', CategoriaController::class);
 
-
+    // CATALOGO
     Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 
+    // TIENDA
     Route::get('/tienda', [CarritoController::class, 'tienda'])->name('clientes.tienda');
-Route::post('/add-cart', [CarritoController::class, 'addCart'])->name('cliente.addCart');
-Route::post('/update-cart', [CarritoController::class, 'updateCart'])->name('cliente.updateCart');
-Route::post('/remove-cart', [CarritoController::class, 'removeCart'])->name('cliente.removeCart');
-Route::post('/clear-cart', [CarritoController::class, 'clearCart'])->name('cliente.clearCart');
-Route::post('/pagar', [CarritoController::class, 'pagar'])->name('cliente.pagar');
-Route::post('/cliente/pagar', [PedidoController::class, 'store'])->name('cliente.pagar');
+    Route::post('/add-cart', [CarritoController::class, 'addCart'])->name('cliente.addCart');
+    Route::post('/update-cart', [CarritoController::class, 'updateCart'])->name('cliente.updateCart');
+    Route::post('/remove-cart', [CarritoController::class, 'removeCart'])->name('cliente.removeCart');
+    Route::post('/clear-cart', [CarritoController::class, 'clearCart'])->name('cliente.clearCart');
+    Route::post('/cliente/pagar', [PedidoController::class, 'store'])->name('cliente.pagar');
 
+    // POS unificado
+    Route::prefix('pos')->group(function() {
+        Route::get('/local', [PosController::class, 'index'])->name('pos.local')->defaults('tipo', 'local');
+        Route::get('/online', [PosController::class, 'index'])->name('pos.online')->defaults('tipo', 'online');
 
-
-
-
-    // PUNTO DE VENTA
-    Route::get('/pos', [PosController::class,'index'])->name('pos.index');
-    Route::post('/pos/agregar', [PosController::class, 'addCart'])->name('pos.addCart');
-    Route::post('/pos/actualizar/{rowId}', [PosController::class, 'updateCart'])->name('pos.updateCart');
-    Route::get('/pos/eliminar/{rowId}', [PosController::class, 'deleteCart'])->name('pos.deleteCart');
-    Route::post('/pos/factura/crear', [PosController::class, 'createInvoice'])->name('pos.createInvoice');
-    Route::post('/pos/factura/imprimir', [PosController::class, 'printInvoice'])->name('pos.printInvoice');
-    Route::get('/pos/clear', [PosController::class, 'clearCart'])->name('pos.clearCart');
-
-
-    // Crear pedido
-    Route::post('/pos/pedido', [PedidoController::class, 'store'])->name('pos.storeOrder');
+        Route::post('/agregar', [PosController::class, 'addCart'])->name('pos.addCart');
+        Route::post('/actualizar/{rowId}', [PosController::class, 'updateCart'])->name('pos.updateCart');
+        Route::get('/eliminar/{rowId}', [PosController::class, 'deleteCart'])->name('pos.deleteCart');
+        Route::get('/clear', [PosController::class, 'clearCart'])->name('pos.clearCart');
+        Route::post('/pedido', [PosController::class, 'storePedido'])->name('pos.storePedido');
+    });
 
     // PEDIDOS
     Route::get('/pedidos/pendientes', [PedidoController::class, 'pendientes'])->name('pedidos.pendientes');
     Route::get('/pedidos/completados', [PedidoController::class, 'completados'])->name('pedidos.completados');
     Route::get('/pedidos/detalles/{pedido_id}', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
-    Route::put('/pedidos/actualizar-estado', [PedidoController::class, 'actualizarEstado'])->name('pedidos.actualizarEstado');
-    Route::get('/pedidos/factura/descargar/{pedido_id}', [PedidoController::class, 'descargarFactura'])->name('pedidos.factura');
+    Route::post('/pedidos/actualizar-estado', [PedidoController::class, 'actualizarEstado'])->name('pedidos.actualizarEstado');
+    Route::get('/pedidos/nota/{id}', [PedidoController::class, 'generarNota'])->name('pedidos.nota');
+    // DATOS DE PAGO (para el administrador)
+    Route::get('/pedidos/datos-pago', [PedidoController::class, 'datosPago'])->name('pedidos.datos-pago');
+    Route::post('/pedidos/guardarDatosPago', [PedidoController::class, 'guardarDatosPago'])->name('pedidos.guardarDatosPago');
+
 
     // Pendientes de pago
     Route::get('/pedidos/pendientes-pago', [PedidoController::class, 'pendientesPago'])->name('pedidos.pendientesPago');
@@ -107,12 +103,29 @@ Route::post('/cliente/pagar', [PedidoController::class, 'store'])->name('cliente
     // Gestión de stock
     Route::get('/stock', [PedidoController::class, 'stock'])->name('pedidos.stock');
 
-
+    // Reportes
     Route::prefix('reportes')->group(function () {
         Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
+
+        Route::middleware(['rol:socio'])->group(function() {
+            Route::get('/mis-compras', [PedidoController::class, 'misCompras'])->name('pedidos.misCompras');
+        });
     });
 
-  
+    // Cambiar estado pedido
+    Route::post('/pedidos/{pedido}/cambiar-estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.cambiarEstado');
+    // Actualizar pedido pendiente
+    Route::post('/pedidos/actualizar-pedido', [PedidoController::class, 'actualizarPedido'])->name('pedidos.actualizarPedido');
+    // MENSAJE FLOTANTE ERROR
+    Route::get('/carrito-vacio', function() {
+        return redirect()->back()->with('error', 'Debe seleccionar al menos 1 producto.');
+    })->name('carrito.vacio');
+    
+    
+
+
+    
 });
+
 
 require __DIR__.'/auth.php';

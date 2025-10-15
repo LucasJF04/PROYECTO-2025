@@ -13,13 +13,14 @@
 
                 <div class="card-body">
                     <form action="{{ route('proveedores.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                        <!-- begin: Input Image -->
+                        @csrf
+
+                        <!-- Imagen del proveedor -->
                         <div class="form-group row align-items-center">
                             <div class="col-md-12">
                                 <div class="profile-img-edit">
                                     <div class="crm-profile-img-edit">
-                                        <img class="crm-profile-pic rounded-circle avatar-100" id="image-preview" src="{{ asset('assets/images/user/1.png') }}" alt="foto-perfil">
+                                        <img class="crm-profile-pic rounded-circle avatar-100" id="image-preview" src="{{ asset('assets/images/user/1.png') }}" alt="foto-proveedor">
                                     </div>
                                 </div>
                             </div>
@@ -28,24 +29,30 @@
                         <div class="row">
                             <div class="input-group mb-4 col-lg-6">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input @error('photo') is-invalid @enderror" id="image" name="foto" accept="image/*" onchange="previewImage();">
-                                    <label class="custom-file-label" for="photo">Seleccionar archivo</label>
+                                    <input type="file" class="custom-file-input @error('foto') is-invalid @enderror" id="foto" name="foto" accept="image/*" onchange="previewImage();">
+                                    <label class="custom-file-label" for="foto">Seleccionar archivo</label>
                                 </div>
-                                @error('photo')
+                                @error('foto')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                         </div>
-                        <!-- end: Input Image -->
+                        <div class="form-group col-md-6">
+                            <label for="nombre">Nombre del Proveedor <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+                            @error('nombre')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                        <!-- begin: Input Data -->
+                        <!-- Datos del proveedor -->
                         <div class="row align-items-center">
                             <div class="form-group col-md-6">
-                                <label for="name">Nombre del Proveedor <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
-                                @error('name')
+                                <label for="nombre_tienda">Nombre de la Tienda <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('nombre_tienda') is-invalid @enderror" id="nombre_tienda" name="nombre_tienda" value="{{ old('nombre_tienda') }}" required>
+                                @error('nombre_tienda')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -53,100 +60,63 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="shopname">Nombre de la Tienda <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('shopname') is-invalid @enderror" id="shopname" name="shopname" value="{{ old('shopname') }}" required>
-                                @error('shopname')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="email">Correo Electrónico del Proveedor <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
-                                @error('email')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="phone">Teléfono del Proveedor <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" required>
-                                @error('phone')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="account_holder">Titular de la Cuenta</label>
-                                <input type="text" class="form-control @error('account_holder') is-invalid @enderror" id="account_holder" name="account_holder" value="{{ old('account_holder') }}">
-                                @error('account_holder')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="bank_name">Nombre del Banco</label>
-                                <select class="form-control @error('bank_name') is-invalid @enderror" name="bank_name">
-                                    <option value="">Seleccionar banco...</option>
-                                    <option value="BRI">BRI</option>
-                                    <option value="BNI">BNI</option>
-                                    <option value="BCA">BCA</option>
-                                    <option value="BSI">BSI</option>
-                                    <option value="Mandiri">Mandiri</option>
-                                </select>
-                                @error('bank_name')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="account_number">Número de Cuenta</label>
-                                <input type="text" class="form-control @error('account_number') is-invalid @enderror" id="account_number" name="account_number" value="{{ old('account_number') }}">
-                                @error('account_number')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="bank_branch">Sucursal Bancaria</label>
-                                <input type="text" class="form-control @error('bank_branch') is-invalid @enderror" id="bank_branch" name="bank_branch" value="{{ old('bank_branch') }}">
-                                @error('bank_branch')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="city">Ciudad del Proveedor <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('city') is-invalid @enderror" id="city" name="city" value="{{ old('city') }}" required>
-                                @error('city')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="type">Tipo de Proveedor <span class="text-danger">*</span></label>
-                                <select class="form-control @error('type') is-invalid @enderror" name="type" required>
+                                <label for="tipo">Tipo de Proveedor <span class="text-danger">*</span></label>
+                                <select class="form-control @error('tipo') is-invalid @enderror" id="tipo" name="tipo" required>
                                     <option value="">Seleccionar tipo...</option>
                                     <option value="Distribuidor">Distribuidor</option>
                                     <option value="Mayorista">Mayorista</option>
                                 </select>
-                                @error('type')
+                                @error('tipo')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="titular_cuenta">Titular de la Cuenta</label>
+                                <input type="text" class="form-control @error('titular_cuenta') is-invalid @enderror" id="titular_cuenta" name="titular_cuenta" value="{{ old('titular_cuenta') }}">
+                                @error('titular_cuenta')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="numero_cuenta">Número de Cuenta</label>
+                                <input type="text" class="form-control @error('numero_cuenta') is-invalid @enderror" id="numero_cuenta" name="numero_cuenta" value="{{ old('numero_cuenta') }}">
+                                @error('numero_cuenta')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="banco">Nombre del Banco</label>
+                                <input type="text" class="form-control @error('banco') is-invalid @enderror" id="banco" name="banco" value="{{ old('banco') }}">
+                                @error('banco')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="sucursal">Sucursal Bancaria</label>
+                                <input type="text" class="form-control @error('sucursal') is-invalid @enderror" id="sucursal" name="sucursal" value="{{ old('sucursal') }}">
+                                @error('sucursal')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="ciudad">Ciudad del Proveedor <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('ciudad') is-invalid @enderror" id="ciudad" name="ciudad" value="{{ old('ciudad') }}" required>
+                                @error('ciudad')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -154,16 +124,15 @@
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label for="address">Dirección del Proveedor <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" name="address" required>{{ old('address') }}</textarea>
-                                @error('address')
+                                <label for="direccion">Dirección del Proveedor <span class="text-danger">*</span></label>
+                                <textarea class="form-control @error('direccion') is-invalid @enderror" id="direccion" name="direccion" required>{{ old('direccion') }}</textarea>
+                                @error('direccion')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                         </div>
-                        <!-- end: Input Data -->
 
                         <div class="mt-2">
                             <button type="submit" class="btn btn-primary mr-2">Guardar</button>

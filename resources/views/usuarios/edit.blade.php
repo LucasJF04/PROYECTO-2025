@@ -78,22 +78,24 @@
                             
 
                             <div class="form-group col-md-6">
-                            <label for="rol">Rol</label>
-                            <select class="form-control @error('rol') is-invalid @enderror" name="rol">
-                                <option selected disabled>-- Seleccionar rol --</option>
-                                @php
-                                    $roles = ['admin' => 'Administrador', 'cliente' => 'Cliente'];
-                                @endphp
-                                @foreach ($roles as $key => $label)
-                                    <option value="{{ $key }}" {{ $userData->rol == $key ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                            @error('rol')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                                <label for="rol">Rol</label>
+                                <select class="form-control @error('rol') is-invalid @enderror" name="rol" required>
+                                    <option disabled {{ old('rol', $userData->rol) ? '' : 'selected' }}>-- Seleccionar rol --</option>
+                                    @php
+                                        $roles = ['administrador' => 'Administrador', 'socio' => 'Socio'];
+                                    @endphp
+                                    @foreach ($roles as $key => $label)
+                                        <option value="{{ $key }}" {{ old('rol', $userData->rol) == $key ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('rol')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
-                        </div>
 
                         </div>
 

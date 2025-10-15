@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Redirect;
 
 class CategoriaController extends Controller
 {
+
+    
+
     /**
      * Display a listing of the resource.
      */
@@ -42,15 +45,15 @@ class CategoriaController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'nombre' => 'required|unique:categorias,name',
-            'alias' => 'required|unique:categorias,slug|alpha_dash',
+            'nombre' => 'required|unique:categorias,nombre',
+            'alias'  => 'required|alpha_dash|unique:categorias,alias',
         ];
 
         $validatedData = $request->validate($rules);
 
         Categoria::create($validatedData);
 
-        return Redirect::route('categorias.index')->with('success', 'Categoria has been created!');
+        return Redirect::route('categorias.index')->with('success', '¡La categoría ha sido creada!');
     }
 
     /**
@@ -77,15 +80,15 @@ class CategoriaController extends Controller
     public function update(Request $request, Categoria $categoria)
     {
         $rules = [
-            'nombre' => 'required|unique:categorias,nombre,'.$categoria->id,
-            'alias' => 'required|alpha_dash|unique:categorias,alias,'.$categoria->id,
+            'nombre' => 'required|unique:categorias,nombre,' . $categoria->id,
+            'alias'  => 'required|alpha_dash|unique:categorias,alias,' . $categoria->id,
         ];
 
         $validatedData = $request->validate($rules);
 
-        Categoria::where('alias', $categoria->alias)->update($validatedData);
+        $categoria->update($validatedData);
 
-        return Redirect::route('categorias.index')->with('success', 'Categoria has been updated!');
+        return Redirect::route('categorias.index')->with('success', '¡La categoría ha sido actualizada!');
     }
 
     /**
@@ -93,8 +96,11 @@ class CategoriaController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
-        Categoria::destroy($categoria->alias);
+        $categoria->delete();
 
-        return Redirect::route('categorias.index')->with('success', 'Categoria has been deleted!');
+        return Redirect::route('categorias.index')->with('success', '¡La categoría ha sido eliminada!');
     }
+
+    
 }
+

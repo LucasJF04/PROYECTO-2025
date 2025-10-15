@@ -3,218 +3,152 @@
 @section('container')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-12">
-        @if (session()->has('success'))
-            <div class="alert text-white bg-success" role="alert">
-                <div class="iq-alert-text">{{ session('success') }}</div>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="ri-close-line"></i>
-                </button>
-            </div>
-        @endif
-        </div>
-        <div class="col-lg-4">
-            <div class="card card-transparent card-block card-stretch card-height border-none">
-                <div class="card-body p-0 mt-lg-2 mt-0">
-                    <h3 class="mb-3">Hola {{ auth()->user()->name }}, Bienvenido</h3>
-                    <p class="mb-0 mr-4">Tu panel de control te ofrece vistas de los indicadores clave de rendimiento.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8">
-            <div class="row">
-                <div class="col-lg-4 col-md-4">
-                    <div class="card card-block card-stretch card-height">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4 card-total-sale">
-                                <div class="icon iq-icon-box-2 bg-info-light">
-                                    <img src="../assets/images/product/1.png" class="img-fluid" alt="image">
-                                </div>
-                                <div>
-                                    <p class="mb-2">Total Pagado</p>
-                                    <h4>$ {{ $total_paid }}</h4>
-                                </div>
-                            </div>
-                            <div class="iq-progress-bar mt-2">
-                                <span class="bg-info iq-progress progress-1" data-percent="85">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="card card-block card-stretch card-height">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4 card-total-sale">
-                                <div class="icon iq-icon-box-2 bg-danger-light">
-                                    <img src="../assets/images/product/2.png" class="img-fluid" alt="image">
-                                </div>
-                                <div>
-                                    <p class="mb-2">Total a pagar</p>
-                                    <h4>$ {{ $total_due }}</h4>
-                                </div>
-                            </div>
-                            <div class="iq-progress-bar mt-2">
-                                <span class="bg-danger iq-progress progress-1" data-percent="70">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="card card-block card-stretch card-height">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4 card-total-sale">
-                                <div class="icon iq-icon-box-2 bg-success-light">
-                                    <img src="../assets/images/product/3.png" class="img-fluid" alt="image">
-                                </div>
-                                <div>
-                                    <p class="mb-2">Completo</p>
-                                    <h4>{{ count($complete_orders) }}</h4>
-                                </div>
-                            </div>
-                            <div class="iq-progress-bar mt-2">
-                                <span class="bg-success iq-progress progress-1" data-percent="75">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card card-block card-stretch card-height">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Visión general</h4>
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <div class="dropdown">
-                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton001"
-                                data-toggle="dropdown">
-                                Este mes<i class="ri-arrow-down-s-line ml-1"></i>
-                            </span>
-                            <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                aria-labelledby="dropdownMenuButton001">
-                                <a class="dropdown-item" href="#">Year</a>
-                                <a class="dropdown-item" href="#">Month</a>
-                                <a class="dropdown-item" href="#">Week</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="layout1-chart1"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card card-block card-stretch card-height">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Ingresos Vs Costos</h4>
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <div class="dropdown">
-                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
-                                data-toggle="dropdown">
-                                Este mes<i class="ri-arrow-down-s-line ml-1"></i>
-                            </span>
-                            <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                aria-labelledby="dropdownMenuButton002">
-                                <a class="dropdown-item" href="#">Yearly</a>
-                                <a class="dropdown-item" href="#">Monthly</a>
-                                <a class="dropdown-item" href="#">Weekly</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="layout1-chart-2" style="min-height: 360px;"></div>
+        <!-- Usuarios -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-primary rounded-lg shadow-sm">
+                <div class="card-body text-center py-3">
+                    <i class="ri-user-line" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2 mb-1">Usuarios</h6>
+                    <h4>{{ $total_usuarios }}</h4>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-8">
-            <div class="card card-block card-stretch card-height">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Productos Destacados</h4>
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <div class="dropdown">
-                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton006"
-                                data-toggle="dropdown">
-                                Este mes<i class="ri-arrow-down-s-line ml-1"></i>
-                            </span>
-                            <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                aria-labelledby="dropdownMenuButton006">
-                                <a class="dropdown-item" href="#">Year</a>
-                                <a class="dropdown-item" href="#">Month</a>
-                                <a class="dropdown-item" href="#">Week</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled row top-product mb-0">
-                    @foreach ($productos as $producto)
-                        <li class="col-lg-3">
-                            <div class="card card-block card-stretch card-height mb-0">
-                                <div class="card-body">
-                                    <div class="bg-warning-light rounded">
-                                        <img src="{{ $producto->imagen_producto ? asset('storage/products/'.$producto->imagen_producto) : asset('assets/images/product/default.webp') }}" class="style-img img-fluid m-auto p-3" alt="image">
-                                    </div>
-                                    <div class="style-text text-left mt-3">
-                                        <h5 class="mb-1">{{ $producto->nombre_producto }}</h5>
-                                        <p class="mb-0">{{ $producto->tienda_producto }} Item</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    @endforeach
-                    </ul>
+        <!-- Socios -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-success rounded-lg shadow-sm">
+                <div class="card-body text-center py-3">
+                    <i class="ri-hand-coin-line" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2 mb-1">Socios</h6>
+                    <h4>{{ $total_socios }}</h4>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card card-transparent card-block card-stretch mb-4">
-                <div class="card-header d-flex align-items-center justify-content-between p-0">
-                    <div class="header-title">
-                        <h4 class="card-title mb-0">New Products</h4>
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <div><a href="#" class="btn btn-primary view-btn font-size-14">View All</a></div>
-                    </div>
+
+        <!-- Productos -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-warning rounded-lg shadow-sm">
+                <div class="card-body text-center py-3">
+                    <i class="ri-shopping-bag-line" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2 mb-1">Productos</h6>
+                    <h4>{{ $total_productos }}</h4>
                 </div>
             </div>
-            @foreach ($new_products as $product)
-            <div class="card card-block card-stretch card-height-helf">
-                <div class="card-body card-item-right">
-                    <div class="d-flex align-items-top">
-                        <div class="bg-warning-light rounded">
-                            <img src="../assets/images/product/04.png" class="style-img img-fluid m-auto" alt="image">
-                        </div>
-                        <div class="style-text text-left">
-                            <h5 class="mb-2">{{ $producto->nombre_producto }}</h5>
-                            <p class="mb-2">Stock : {{ $producto->tienda_producto }}</p>
-                            <p class="mb-0">Price : ${{ $producto->precio_venta }}</p>
-                        </div>
-                    </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-danger rounded-lg shadow-sm">
+                <div class="card-body text-center py-3">
+                    <i class="ri-bar-chart-line" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2 mb-1">Ventas</h6>
+                    <h4>{{ $total_ventas }}</h4>
                 </div>
             </div>
-            @endforeach
         </div>
     </div>
-    <!-- Page end  -->
-</div>
-@endsection
 
-@section('specificpagescripts')
-<!-- Table Treeview JavaScript -->
-<script src="{{ asset('assets/js/table-treeview.js') }}"></script>
-<!-- Chart Custom JavaScript -->
-<script src="{{ asset('assets/js/customizer.js') }}"></script>
-<!-- Chart Custom JavaScript -->
-<script async src="{{ asset('assets/js/chart-custom.js') }}"></script>
+    <div class="row mt-4">
+        <!-- Productos más vendidos -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm rounded-lg">
+                <div class="card-header bg-primary text-white">
+                    <i class="ri-star-line"></i> Productos Más Vendidos
+                </div>
+                <div class="card-body">
+                    <canvas id="chartMasVendidos"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos con stock mínimo -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm rounded-lg">
+                <div class="card-header bg-warning text-dark">
+                    <i class="ri-alert-line"></i> Productos con Stock Mínimo
+                </div>
+                <div class="card-body">
+                    <canvas id="chartStockMinimo"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    
+    const labelsVendidos = [
+        @foreach($productos_mas_vendidos as $producto)
+            "{{ $producto->nombre_producto }}",
+        @endforeach
+    ];
+    const dataVendidos = {
+        labels: labelsVendidos,
+        datasets: [{
+            label: 'Cantidad Vendida',
+            data: [
+                @foreach($productos_mas_vendidos as $producto)
+                    {{ $producto->detalles_pedido_sum_cantidad ?? 0 }},
+                @endforeach
+            ],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+    const configVendidos = {
+        type: 'bar',
+        data: dataVendidos,
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        },
+    };
+    new Chart(document.getElementById('chartMasVendidos'), configVendidos);
+
+    
+    const labelsStock = [
+        @foreach($productos_stock_minimo as $producto)
+            "{{ $producto->nombre_producto }}",
+        @endforeach
+    ];
+
+    const dataStockValues = [
+        @foreach($productos_stock_minimo as $producto)
+            {{ $producto->stock }},
+        @endforeach
+    ];
+
+    const backgroundColors = dataStockValues.map(stock => {
+        if(stock <= 5) return 'rgba(255, 99, 132, 0.7)'; 
+        if(stock <= 10) return 'rgba(255, 206, 86, 0.7)'; 
+        return 'rgba(75, 192, 192, 0.7)'; 
+    });
+
+    const dataStock = {
+        labels: labelsStock,
+        datasets: [{
+            label: 'Stock',
+            data: dataStockValues,
+            backgroundColor: backgroundColors,
+            borderColor: 'rgba(0,0,0,0.1)',
+            borderWidth: 1
+        }]
+    };
+
+    const configStock = {
+        type: 'bar',
+        data: dataStock,
+        options: {
+            indexAxis: 'y', 
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true } }
+        },
+    };
+    new Chart(document.getElementById('chartStockMinimo'), configStock);
+</script>
 @endsection

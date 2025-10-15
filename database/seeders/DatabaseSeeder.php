@@ -7,7 +7,6 @@ namespace Database\Seeders;
 use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Cliente;
-use App\Models\Empleados;
 use App\Models\Proveedor;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -35,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@gmail.com',
         ]);
 
-        Empleados::factory(5)->create();
+        
 
         Cliente::factory(25)->create();
         Proveedor::factory(10)->create();
@@ -54,7 +53,6 @@ class DatabaseSeeder extends Seeder
         Categoria::factory(5)->create();
 
         Permission::create(['name' => 'pos.menu', 'group_name' => 'pos']);
-        Permission::create(['name' => 'employee.menu', 'group_name' => 'employee']);
         Permission::create(['name' => 'customer.menu', 'group_name' => 'customer']);
         Permission::create(['name' => 'supplier.menu', 'group_name' => 'supplier']);
        
@@ -69,7 +67,7 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'SuperAdmin'])->givePermissionTo(Permission::all());
         Role::create(['name' => 'Admin'])->givePermissionTo(['customer.menu', 'user.menu', 'supplier.menu']);
         Role::create(['name' => 'Account'])->givePermissionTo(['customer.menu', 'user.menu', 'supplier.menu']);
-        Role::create(['name' => 'Manager'])->givePermissionTo(['stock.menu', 'orders.menu', 'product.menu', 'employee.menu']);
+        Role::create(['name' => 'Manager'])->givePermissionTo(['stock.menu', 'orders.menu', 'product.menu']);
 
         $admin->assignRole('SuperAdmin');
         $user->assignRole('Account');

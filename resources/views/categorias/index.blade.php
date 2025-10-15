@@ -15,8 +15,7 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Lista de categorias</h4>
-                    <p class="mb-0">Un panel de categorías le permite recopliar y visualizar fácilmente los datos de las catagorías <br>
-                        para optimizar la experiencia de las categorías y garantizar la retención de las mismas. </p>
+
                 </div>
                 <div>
                 <a href="{{ route('categorias.create') }}" class="btn btn-primary add-list"><i class="fas fa-plus mr-3"></i>Crear Categoria</a>
@@ -61,8 +60,8 @@
                     <thead class="bg-white text-uppercase">
                         <tr class="ligth ligth-data">
                             <th>No.</th>
-                            <th>@sortablelink('Nombre')</th>
-                            <th>@sortablelink('categoria')</th>
+                            <th>Nombre</th>
+                            <th>categoria</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -75,7 +74,8 @@
                             <td>
                                 <div class="d-flex align-items-center list-action">
                                     <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                        href="{{ route('categorias.edit', $categoria->alias) }}""><i class="ri-pencil-line mr-0"></i>
+                                        href="{{ route('categorias.edit', $categoria->alias) }}"">
+                                        Editar
                                     </a>
                                     <form action="{{ route('categorias.destroy', $categoria->alias) }}" method="POST" style="margin-bottom: 5px">
                                         @method('delete')
